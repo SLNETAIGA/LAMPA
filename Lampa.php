@@ -1,14 +1,19 @@
 <?php
     /*
 	 * A LAMPA(http://esolangs.org/wiki/LAMPA) implement on php cli
+	 * Usage: php Lampa.php <input.lamp>
 	 * By Roman Didrag
 	 */
     $stack = array();
+	$stack["null"] = 0;
+	$stack["one"] = 1;
+	$stack["pi"] = 3.141;
 	$p = 0;
 	$l = array();	
 	$b = -1;
 	$source = file_get_contents($argv[1]);
     $source = preg_replace("/\-\-.+?\n/","",$source,-1);
+	$source = preg_replace("/\\.+?\n/","",$source,-1);
 	$source = explode(";",$source);
 	
 	function evl($source){
@@ -31,6 +36,7 @@
 			case "where":break;
 			case "import":break;
 			case "--":break;
+			case "\\":break;
 			case "rec":
 			if($b != -1){
 				if(trim($ops[1]) == "proc"){
@@ -82,6 +88,11 @@
 			} else {
 			$stack[trim($ops[1])] = (int) fgets(STDIN);
 			}
+			break;
+			case "data":
+			if(trim($ops[2]) == "as") {
+			$stack[trim($ops[1])] = ord(trim($ops[3]));
+			} 
 			break;
 			case "do:":
 			if(trim($ops[1]) == "inc"){

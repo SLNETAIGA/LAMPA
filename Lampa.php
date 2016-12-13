@@ -14,15 +14,17 @@
 	$source = file_get_contents($argv[1]);
     $source = preg_replace("/\-\-.+?\n/","",$source,-1);
 	$source = preg_replace("/\\.+?\n/","",$source,-1);
-	$source = explode(";",$source);
+	$source = explode(".",$source);
 	
 	function evl($source){
 	global $stack,$p,$l,$b;
 	for($i=0; $i<count($source); ++$i) {
 		$ops = explode(" ",$source[$i]);
 	    switch(strtolower(trim($ops[0]))){
-			case "where":
+			case "module":
+			if(trim($ops[2]) == "where"){
 			$l[trim($ops[1])] = $i;
+			}
 			break;
 			case "import":
 			evl(file_get_contents(trim($ops[1])));
@@ -33,7 +35,7 @@
 		$ops = explode(" ",$source[$i]);
 		
 		switch(strtolower(trim($ops[0]))){
-			case "where":break;
+			case "module":break;
 			case "import":break;
 			case "--":break;
 			case "\\":break;
